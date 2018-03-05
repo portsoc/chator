@@ -8,3 +8,7 @@ Functionality:
 
 Management:
 * this is managed in git
+* source code hosted on GitHub
+
+Deployment
+* Google Cloud virtual machine
