@@ -1,0 +1,9 @@
+#newmsg {
+  width: 95vw;
+  padding: .5rem ;
+  font-size: 130%;
+}
+
+#messages > li {
+  margin-top: 1rem;
+}
