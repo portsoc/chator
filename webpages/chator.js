@@ -1,14 +1,16 @@
 window.addEventListener('load', initialize);
 const submitBtn = document.querySelector('#submit');
 
-const data = [
-  'hello',
-  'Luke',
-  'I am your sibling!',
-]
+async function initialize() {
+  submitBtn.addEventListener('click', addMessage);
 
-function initialize() {
-  submit.addEventListener('click', addMessage);
+  const response = await fetch('/messages');
+  if (!response.ok) {
+    console.error('bad response');
+    return;
+  }
+
+  const data = await response.json();
 
   const ol = document.querySelector('#messages');
   ol.innerHTML = '';
