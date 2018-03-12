@@ -9,7 +9,8 @@ router.get('/messages', [
 
 router.post('/messages', [
   messages.sanitizeNewMessage.bind(this),
-  messages.addNewMessageToMessage.bind(this),
+  messages.addNewMessageToMessageData.bind(this),
+  messages.trimMessagesToMaximum.bind(this),
   messages.sendMessagesToRequestingUser.bind(this),
 ]);
 
