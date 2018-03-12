@@ -11,7 +11,10 @@ async function initialize() {
   }
 
   const data = await response.json();
+  fillMessages(data);
+}
 
+function fillMessages(data) {
   const ol = document.querySelector('#messages');
   ol.innerHTML = '';
 
@@ -22,11 +25,19 @@ async function initialize() {
   }
 }
 
-function addMessage(e) {
+async function addMessage(e) {
   const newMsgEl = document.querySelector('#newmsg');
-  const ol = document.querySelector('#messages');
+  if (newMsgEl.value.trim() === '') return;
 
-  const li = document.createElement('li');
-  li.textContent = newMsgEl.value;
-  ol.insertBefore(li, ol.children[0]);
+  const response = await fetch('/messages', {
+    method: 'POST',
+    body: JSON.stringify({ value: newMsgEl.value.trim() }),
+    headers: {
+      'content-type': 'application/json',
+    },
+  });
+
+  if (response.ok) {
+    fillMessages(await response.json());
+  }
 }
