@@ -33,11 +33,16 @@ function fillMessages(data) {
 
 async function addMessage(e) {
   const newMsgEl = document.querySelector('#newmsg');
-  if (newMsgEl.value.trim() === '') return;
+  const newMessage = newMsgEl.value;
+
+  // Clearing the input after the user submits there message
+  newMsgEl.value = '';
+
+  if (newMessage.trim() === '') return;
 
   const response = await fetch('/messages', {
     method: 'POST',
-    body: JSON.stringify({ value: newMsgEl.value.trim() }),
+    body: JSON.stringify({ value: newMessage.trim() }),
     headers: {
       'content-type': 'application/json',
     },
