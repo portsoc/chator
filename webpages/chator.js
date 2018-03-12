@@ -1,9 +1,15 @@
 window.addEventListener('load', initialize);
 const submitBtn = document.querySelector('#submit');
+const refreshBtn = document.querySelector('#refresh');
 
 async function initialize() {
   submitBtn.addEventListener('click', addMessage);
+  refreshBtn.addEventListener('click', loadMessages);
 
+  loadMessages();
+}
+
+async function loadMessages() {
   const response = await fetch('/messages');
   if (!response.ok) {
     console.error('bad response');
