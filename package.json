@@ -4,7 +4,8 @@
   "description": "Ch@or: A little chat application =======",
   "main": "server",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start:hot": "nodemon ./server/server.js",
+    "start": "node ./server/server.js"
   },
   "repository": {
     "type": "git",
