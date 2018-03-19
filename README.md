@@ -10,13 +10,16 @@ API:
 * list the last up-to-50 messages
 * submit a message
 * a message is a string of up-to 281 characters
+* see below
 
 Management:
 * this is managed in git
 * source code hosted on GitHub (OBVS)
 
 Deployment
-* Google Cloud virtual machine
+* Google Cloud virtual machine with MariaDB
+* `initdb.sql` creates the necessary database structure
+* set up `server/config.json` using the sample in `server/config-sample.json` with your credentials
 
 
 API

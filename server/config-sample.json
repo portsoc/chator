@@ -1,0 +1,9 @@
+{
+  "mysql": {
+    "host": "localhost",
+    "user": "username",
+    "password": "password",
+    "database": "chator",
+    "socketPath": "/private/tmp/mysql.sock"
+  }
+}

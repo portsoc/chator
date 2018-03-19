@@ -2,18 +2,25 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const mysql = require('mysql2/promise');
+
+const config = require('./config');
+
 const app = express();
 app.use(bodyParser.json());
 
-// data
+const globalConnection = mysql.createConnection(config.mysql);
 
-const data = [ 'first mess ever' ];
-
-app.get('/messages', (req, res) => {
-  res.json(data);
+app.get('/messages', async (req, res) => {
+  try {
+    res.json(await getMessagesFromDB());
+  } catch (e) {
+    console.error(e);
+    res.sendStatus(500);
+  }
 });
 
-app.post('/messages', (req, res) => {
+app.post('/messages', async (req, res) => {
   if (req.body == null || req.body.value == null ||
       typeof req.body.value !== 'string' ||
       req.body.value.trim() === '') {
@@ -21,10 +28,28 @@ app.post('/messages', (req, res) => {
     return;
   }
 
-  data.unshift(req.body.value);
-  if (data.length > 50) data.length = 50;
-  res.json(data);
+  try {
+
+    const myConn = await globalConnection;
+    await myConn.execute(
+      'INSERT INTO messages (message) VALUES (?)',
+      [req.body.value]);
+
+    res.json(await getMessagesFromDB());
+
+  } catch (e) {
+    console.error(e);
+    res.sendStatus(500);
+  }
 })
+
+async function getMessagesFromDB() {
+  const myConn = await globalConnection;
+  const [rows] = await myConn.execute(
+    'SELECT message FROM messages ORDER BY id DESC LIMIT 50');
+
+  return rows.map((r) => r.message);
+}
 
 // static routes
 
