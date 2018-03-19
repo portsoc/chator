@@ -14,6 +14,13 @@ app.get('/messages', (req, res) => {
 });
 
 app.post('/messages', (req, res) => {
+  if (req.body == null || req.body.value == null ||
+      typeof req.body.value !== 'string' ||
+      req.body.value.trim() === '') {
+    res.sendStatus(400);
+    return;
+  }
+
   data.unshift(req.body.value);
   if (data.length > 50) data.length = 50;
   res.json(data);
