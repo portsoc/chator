@@ -33,7 +33,10 @@ function fillMessages(data) {
 
 async function addMessage(e) {
   const newMsgEl = document.querySelector('#newmsg');
-  if (newMsgEl.value.trim() === '') return;
+  if (newMsgEl.value.trim() === '') {
+    newMsgEl.focus();
+    return;
+  }
 
   const response = await fetch('/messages', {
     method: 'POST',
@@ -46,5 +49,6 @@ async function addMessage(e) {
   if (response.ok) {
     fillMessages(await response.json());
     newMsgEl.value = '';
+    newMsgEl.focus();
   }
 }
