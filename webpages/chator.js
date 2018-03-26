@@ -1,12 +1,24 @@
 window.addEventListener('load', initialize);
-const submitBtn = document.querySelector('#submit');
 const refreshBtn = document.querySelector('#refresh');
+const newMsgEl = document.querySelector('#newmsg');
 
 async function initialize() {
-  submitBtn.addEventListener('click', addMessage);
   refreshBtn.addEventListener('click', loadMessages);
 
+  newMsgEl.addEventListener('keydown', keyDownHandler);
+
   loadMessages();
+}
+
+function keyDownHandler(e) {
+  if (e.defaultPrevented) {
+    return; // Do nothing if the event was already processed
+  }
+
+  if (e.key === 'Enter') {
+    addMessage();
+    e.preventDefault();
+  }
 }
 
 async function loadMessages() {
@@ -32,7 +44,6 @@ function fillMessages(data) {
 }
 
 async function addMessage(e) {
-  const newMsgEl = document.querySelector('#newmsg');
   if (newMsgEl.value.trim() === '') {
     newMsgEl.focus();
     return;
