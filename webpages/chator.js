@@ -1,12 +1,10 @@
 window.addEventListener('load', initialize);
-const refreshBtn = document.querySelector('#refresh');
 const newMsgEl = document.querySelector('#newmsg');
 
+const AUTOREFRESH_INTERVAL = 1000; // 1s
+
 async function initialize() {
-  refreshBtn.addEventListener('click', loadMessages);
-
   newMsgEl.addEventListener('keydown', keyDownHandler);
-
   loadMessages();
 }
 
@@ -30,6 +28,8 @@ async function loadMessages() {
 
   const data = await response.json();
   fillMessages(data);
+
+  setTimeout(loadMessages, AUTOREFRESH_INTERVAL);
 }
 
 function fillMessages(data) {
