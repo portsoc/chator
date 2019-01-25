@@ -4,8 +4,8 @@
   "description": "Ch@or: A little chat application =======",
   "main": "server",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server/server"
+    "start": "./node_modules/.bin/nodemon server/server",
+    "initdb": "mysql -u root -p < initdb.sql"
   },
   "repository": {
     "type": "git",
