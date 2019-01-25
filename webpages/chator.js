@@ -1,14 +1,16 @@
+'use strict';
+
 window.addEventListener('load', initialize);
-const newMsgEl = document.querySelector('#newmsg');
-
 const AUTOREFRESH_INTERVAL = 1000; // 1s
+let elMsg;
 
-async function initialize() {
-  newMsgEl.addEventListener('keydown', keyDownHandler);
+async function initialize () {
+  elMsg = document.querySelector('#newmsg');
+  elMsg.addEventListener('keydown', keyDownHandler);
   loadMessages();
 }
 
-function keyDownHandler(e) {
+function keyDownHandler (e) {
   if (e.defaultPrevented) {
     return; // Do nothing if the event was already processed
   }
@@ -19,7 +21,7 @@ function keyDownHandler(e) {
   }
 }
 
-async function loadMessages(isUpdate = false) {
+async function loadMessages (isUpdate = false) {
   const response = await fetch('/v2/messages');
   if (!response.ok) {
     console.error('bad response');
@@ -29,10 +31,14 @@ async function loadMessages(isUpdate = false) {
   const data = await response.json();
   fillMessages(data, isUpdate);
 
+  if (data.length > 0) {
+    document.querySelector('#none').remove();
+  }
+
   setTimeout(loadMessages, AUTOREFRESH_INTERVAL, true);
 }
 
-function fillMessages(data, isUpdate = false) {
+function fillMessages (data, isUpdate = false) {
   const ol = document.querySelector('#messages');
 
   for (const msg of data.reverse()) {
@@ -42,31 +48,31 @@ function fillMessages(data, isUpdate = false) {
     const li = document.createElement('li');
     li.textContent = msg.message;
     li.dataset.id = msg.id;
-    if (isUpdate) li.classList.add("update");
+    if (isUpdate) li.classList.add('update');
 
-    // used for alternating message backgrounds 
-    if (msg.id % 2) li.dataset.odd = true; 
+    // used for alternating message backgrounds
+    if (msg.id % 2) li.dataset.odd = true;
     ol.insertBefore(li, ol.children[0]);
   }
 }
 
-async function addMessage(e) {
-  if (newMsgEl.value.trim() === '') {
-    newMsgEl.focus();
+async function addMessage (e) {
+  if (elMsg.value.trim() === '') {
+    elMsg.focus();
     return;
   }
 
   const response = await fetch('/v2/messages', {
     method: 'POST',
-    body: JSON.stringify({ value: newMsgEl.value.trim() }),
+    body: JSON.stringify({ value: elMsg.value.trim() }),
     headers: {
-      'content-type': 'application/json',
-    },
+      'content-type': 'application/json'
+    }
   });
 
   if (response.ok) {
     fillMessages(await response.json(), true);
-    newMsgEl.value = '';
-    newMsgEl.focus();
+    elMsg.value = '';
+    elMsg.focus();
   }
 }
