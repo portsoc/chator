@@ -1,0 +1,98 @@
+:root {
+  font-family: sans-serif;
+  box-sizing: border-box;
+  --pad: 1rem;
+  --rad: calc(var(--pad) / 2);
+  --height: calc(var(--pad) * 14);
+  --speedOfFade: 5s;
+  --hi: rgba(255,244,0,0.25);
+  --althi: rgba(224,173,0,0.25);
+  --clear: rgba(0,0,0,0);
+  --fg: rgba(0,0,0,1);
+  --bg: #FFF;
+  --bgalt: #DEF;
+  --body: #FFF;
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--body);
+  color: var(--fg);
+}
+
+#newmsg {
+  width: 100vw;
+  padding: .5rem ;
+  font-size: 130%;
+  background: var(--body);
+  color: var(--fg);
+  caret-color: var(--hi);
+}
+
+#message {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+#messages > li {
+  max-height: var(--height);
+  padding: var(--pad);
+  list-style: none;
+  overflow: hidden;
+  animation-duration: var(--speedOfFade);
+  animation-name: slidein;
+  background: var(--bg);
+}
+
+[data-odd] {
+  --bg: var(--bgalt);
+  --hi: var(--althi);
+}
+
+
+
+@keyframes slidein {
+  0% {
+    max-height: 0;
+    background-color: var(--hi);
+    color: var(--clear);
+    padding: 0;
+  }
+
+  10% {
+    max-height: 5em;
+    background-color: var(--hi);
+    color: var(--clear);
+    padding: var(--pad);
+  }
+  21% {
+    color: var(--fg);
+  }
+
+
+
+  100% {
+    color: var(--fg);
+    background-color: var(--bg);
+  }
+}
+
+
+@media (prefers-color-scheme: dark) {
+
+  :root {
+    --hi: rgba(0,244,0,0.75);
+    --althi: rgba(0,173,0,0.75);
+    --clear: rgba(0,0,0,0);
+    --fg: rgba(204,204,204,0.8);
+    --bg: #000;
+    --bgalt: #222;
+    --body: #111;
+  }
+
+}
