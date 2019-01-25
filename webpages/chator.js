@@ -19,7 +19,7 @@ function keyDownHandler(e) {
   }
 }
 
-async function loadMessages() {
+async function loadMessages(isUpdate = false) {
   const response = await fetch('/v2/messages');
   if (!response.ok) {
     console.error('bad response');
@@ -27,12 +27,12 @@ async function loadMessages() {
   }
 
   const data = await response.json();
-  fillMessages(data);
+  fillMessages(data, isUpdate);
 
-  setTimeout(loadMessages, AUTOREFRESH_INTERVAL);
+  setTimeout(loadMessages, AUTOREFRESH_INTERVAL, true);
 }
 
-function fillMessages(data) {
+function fillMessages(data, isUpdate = false) {
   const ol = document.querySelector('#messages');
 
   for (const msg of data.reverse()) {
@@ -42,6 +42,8 @@ function fillMessages(data) {
     const li = document.createElement('li');
     li.textContent = msg.message;
     li.dataset.id = msg.id;
+    if (isUpdate) li.classList.add("update");
+
     // used for alternating message backgrounds 
     if (msg.id % 2) li.dataset.odd = true; 
     ol.insertBefore(li, ol.children[0]);
@@ -63,7 +65,7 @@ async function addMessage(e) {
   });
 
   if (response.ok) {
-    fillMessages(await response.json());
+    fillMessages(await response.json(), true);
     newMsgEl.value = '';
     newMsgEl.focus();
   }

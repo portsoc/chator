@@ -44,9 +44,12 @@ body {
   padding: var(--pad);
   list-style: none;
   overflow: hidden;
+  background: var(--bg);
+}
+
+#messages > li.update {
   animation-duration: var(--speedOfFade);
   animation-name: slidein;
-  background: var(--bg);
 }
 
 [data-odd] {
