@@ -1,5 +1,7 @@
 'use strict';
 
+/* global gapi */
+
 window.addEventListener('load', initialize);
 const AUTOREFRESH_INTERVAL = 1000; // 1s
 let elMsg;
@@ -32,7 +34,8 @@ async function loadMessages (isUpdate = false) {
   fillMessages(data, isUpdate);
 
   if (data.length > 0) {
-    document.querySelector('#none').remove();
+    const noMsgEl = document.querySelector('#none');
+    if (noMsgEl) noMsgEl.remove();
   }
 
   setTimeout(loadMessages, AUTOREFRESH_INTERVAL, true);
@@ -62,11 +65,14 @@ async function addMessage (e) {
     return;
   }
 
+  const idToken = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().id_token;
+
   const response = await fetch('/v2/messages', {
     method: 'POST',
     body: JSON.stringify({ value: elMsg.value.trim() }),
     headers: {
-      'content-type': 'application/json'
+      'content-type': 'application/json',
+      'Authorization': 'Bearer ' + idToken
     }
   });
 
@@ -76,3 +82,11 @@ async function addMessage (e) {
     elMsg.focus();
   }
 }
+
+window.onSignIn = (googleUser) => {
+  const profile = googleUser.getBasicProfile();
+  console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+  console.log('Name: ' + profile.getName());
+  console.log('Image URL: ' + profile.getImageUrl());
+  console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+};

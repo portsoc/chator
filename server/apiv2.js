@@ -23,8 +23,13 @@ async function getMessages(req, res) {
 async function postMessage(req, res) {
   if (!util.checkBodyIsValid(req, res)) return;
 
+  let photoUrl = null;
+  if (req.user) {
+    photoUrl = req.user.photos[0].value;
+  }
+
   try {
-    await saveMessageInDB(req.body.value);
+    await saveMessageInDB(req.body.value, photoUrl);
     res.json(await getMessagesFromDB());
 
   } catch (e) {
@@ -34,11 +39,11 @@ async function postMessage(req, res) {
 }
 
 
-async function saveMessageInDB(msg) {
+async function saveMessageInDB(msg, url = '') {
   const myConn = await globalConnection;
   return myConn.execute(
-    'INSERT INTO messages (message) VALUES (?)',
-    [msg]);
+    'INSERT INTO messages (message,url) VALUES (?,?)',
+    [msg, url]);
 }
 
 async function getMessagesFromDB() {

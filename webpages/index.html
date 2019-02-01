@@ -2,11 +2,15 @@
 <title>ch@or: a little chat app</title>
 <link rel="stylesheet" href="css/style.css">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<meta name="google-signin-client_id" content="1010342411950-ulstr9hnl2uqrlth7pu94ic0h9eqlfb9.apps.googleusercontent.com">
 <script src="chator.js"></script>
 
 <input type="text" id="newmsg" maxlength="281" placeholder="ch@or: say something..." autofocus>
 
+<div class="g-signin2" data-onsuccess="onSignIn"></div>
+
+
 <ol id="messages">
   <li id="none">no messages</li>
 </ol>
-
