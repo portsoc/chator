@@ -57,7 +57,7 @@ function fillMessages (data, isUpdate = false) {
       const img = document.createElement('img');
       img.src = msg.url;
       img.alt = "poster's photo";
-      img.className = 'avatar';
+      img.classList.add('avatar');
       li.insertBefore(img, li.childNodes[0]);
     }
 
