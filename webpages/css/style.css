@@ -34,6 +34,10 @@ body {
   caret-color: var(--hi);
 }
 
+body:not(.logged-in) #newmsg {
+  visibility: hidden;
+}
+
 #message {
   display: flex;
   flex-direction: column-reverse;
@@ -57,11 +61,10 @@ body {
   --hi: var(--althi);
 }
 
-
-.g-signin2 {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
+header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 
@@ -89,6 +92,16 @@ body {
     color: var(--fg);
     background-color: var(--bg);
   }
+}
+
+.g-signin2 {
+  margin: 0 .5rem;
+}
+
+img.avatar {
+  max-height: 2rem;
+  max-width: 2rem;
+  border-radius: 50%;
 }
 
 

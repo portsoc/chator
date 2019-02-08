@@ -53,6 +53,14 @@ function fillMessages (data, isUpdate = false) {
     li.dataset.id = msg.id;
     if (isUpdate) li.classList.add('update');
 
+    if (msg.url) {
+      const img = document.createElement('img');
+      img.src = msg.url;
+      img.alt = "poster's photo";
+      img.className = 'avatar';
+      li.insertBefore(img, li.childNodes[0]);
+    }
+
     // used for alternating message backgrounds
     if (msg.id % 2) li.dataset.odd = true;
     ol.insertBefore(li, ol.children[0]);
@@ -84,9 +92,5 @@ async function addMessage (e) {
 }
 
 window.onSignIn = (googleUser) => {
-  const profile = googleUser.getBasicProfile();
-  console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-  console.log('Name: ' + profile.getName());
-  console.log('Image URL: ' + profile.getImageUrl());
-  console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+  document.body.classList.add('logged-in');
 };

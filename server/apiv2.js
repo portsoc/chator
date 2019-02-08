@@ -1,5 +1,6 @@
 const express = require('express');
 const mysql = require('mysql2/promise');
+const GoogleAuth = require('simple-google-openid');
 
 const config = require('./config');
 const util = require('./util');
@@ -9,7 +10,7 @@ const globalConnection = mysql.createConnection(config.mysql);
 const router = express.Router();
 
 router.get('/messages', getMessages);
-router.post('/messages', postMessage);
+router.post('/messages', GoogleAuth.guardMiddleware(), postMessage);
 
 async function getMessages (req, res) {
   try {
@@ -47,9 +48,13 @@ async function saveMessageInDB (msg, url) {
 async function getMessagesFromDB () {
   const myConn = await globalConnection;
   const [rows] = await myConn.execute(
-    'SELECT id, message FROM messages ORDER BY id DESC LIMIT 50');
+    'SELECT id, message, url FROM messages ORDER BY id DESC LIMIT 50');
 
-  return rows.map((r) => ({ id: r.id, message: r.message }));
+  return rows.map((r) => ({
+    id: r.id,
+    message: r.message,
+    url: r.url,
+  }));
 }
 
 module.exports = router;
