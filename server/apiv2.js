@@ -11,7 +11,7 @@ const router = express.Router();
 router.get('/messages', getMessages);
 router.post('/messages', postMessage);
 
-async function getMessages(req, res) {
+async function getMessages (req, res) {
   try {
     res.json(await getMessagesFromDB());
   } catch (e) {
@@ -20,7 +20,7 @@ async function getMessages(req, res) {
   }
 }
 
-async function postMessage(req, res) {
+async function postMessage (req, res) {
   if (!util.checkBodyIsValid(req, res)) return;
 
   let photoUrl = null;
@@ -31,28 +31,25 @@ async function postMessage(req, res) {
   try {
     await saveMessageInDB(req.body.value, photoUrl);
     res.json(await getMessagesFromDB());
-
   } catch (e) {
     console.error(e);
     res.sendStatus(500);
   }
 }
 
-
-async function saveMessageInDB(msg, url = '') {
+async function saveMessageInDB (msg, url) {
   const myConn = await globalConnection;
   return myConn.execute(
     'INSERT INTO messages (message,url) VALUES (?,?)',
     [msg, url]);
 }
 
-async function getMessagesFromDB() {
+async function getMessagesFromDB () {
   const myConn = await globalConnection;
   const [rows] = await myConn.execute(
     'SELECT id, message FROM messages ORDER BY id DESC LIMIT 50');
 
-  return rows.map((r) => ({id: r.id, message: r.message}));
+  return rows.map((r) => ({ id: r.id, message: r.message }));
 }
-
 
 module.exports = router;

@@ -20,4 +20,4 @@ app.use('/v2', apiv2);
 app.use(express.static('./webpages'));
 
 // starting server
-app.listen(8080);
+app.listen(process.env.PORT || 8080);
