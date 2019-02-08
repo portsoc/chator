@@ -5,7 +5,8 @@
   "main": "server",
   "scripts": {
     "start": "./node_modules/.bin/nodemon server/server",
-    "initdb": "mysql -u root -p < initdb.sql"
+    "initdb": "mysql -u root -p < initdb.sql",
+    "upgradedb-2019-02-01": "mysql -u root -p < upgrade-2019-02-01.sql"
   },
   "repository": {
     "type": "git",

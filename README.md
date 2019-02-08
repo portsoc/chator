@@ -19,6 +19,8 @@ Management:
 Deployment
 * Google Cloud virtual machine with MariaDB
 * `initdb.sql` creates the necessary database structure
+  * **for those using pre-2019-02-01 versions, please use this to upgrade your DB:**
+    `npm run updatedb-2019-02-01`
 * set up `server/config.json` using the sample in `server/config-sample.json` with your credentials
 
 
