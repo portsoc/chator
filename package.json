@@ -6,7 +6,8 @@
   "scripts": {
     "start": "./node_modules/.bin/nodemon server/server",
     "initdb": "mysql -u root -p < initdb.sql",
-    "upgradedb-2019-02-01": "mysql -u root -p < upgrade-2019-02-01.sql"
+    "upgradedb-2019-02-01": "mysql -u root -p < upgrade-2019-02-01.sql",
+    "upgradedb-emoji": "mysql -u root -p < upgrade-utf8mb4.sql"
   },
   "repository": {
     "type": "git",
