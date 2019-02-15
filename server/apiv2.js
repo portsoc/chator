@@ -14,7 +14,7 @@ router.post('/messages', GoogleAuth.guardMiddleware(), postMessage);
 
 async function getMessages (req, res) {
   try {
-    res.json(await getMessagesFromDB());
+    res.json(await getMessagesFromDB(req.query.since));
   } catch (e) {
     console.error(e);
     res.sendStatus(500);
@@ -45,10 +45,13 @@ async function saveMessageInDB (msg, url) {
     [msg, url]);
 }
 
-async function getMessagesFromDB () {
+async function getMessagesFromDB (since) {
   const myConn = await globalConnection;
-  const [rows] = await myConn.execute(
-    'SELECT id, message, url FROM messages ORDER BY id DESC LIMIT 50');
+  let query = 'SELECT id, message, url FROM messages ORDER BY id DESC LIMIT 50';
+  if (since != null) {
+    query = myConn.format('SELECT id, message, url FROM messages WHERE id > ? ORDER BY id DESC LIMIT 50', since);
+  }
+  const [rows] = await myConn.execute(query);
 
   return rows.map((r) => ({
     id: r.id,

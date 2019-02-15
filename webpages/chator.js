@@ -24,7 +24,15 @@ function keyDownHandler (e) {
 }
 
 async function loadMessages (isUpdate = false) {
-  const response = await fetch('/v2/messages');
+  let url = '/v2/messages';
+
+  // request only data since the last ID we've seen
+  const lastMessage = document.querySelector('li');
+  if (lastMessage && lastMessage.dataset.id) {
+    url += '?since=' + lastMessage.dataset.id;
+  }
+
+  const response = await fetch(url);
   if (!response.ok) {
     console.error('bad response');
     return;
