@@ -52,7 +52,8 @@ async function loadMessages (isUpdate = false) {
 function fillMessages (data, isUpdate = false) {
   const ol = document.querySelector('#messages');
 
-  for (const msg of data.reverse()) {
+  data.reverse();
+  for (const msg of data) {
     if (document.querySelector(`li[data-id='${msg.id}']`)) {
       continue;
     }
