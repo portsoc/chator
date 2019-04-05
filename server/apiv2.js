@@ -9,7 +9,7 @@ const router = express.Router();
 router.get('/messages', getMessages);
 router.post('/messages', GoogleAuth.guardMiddleware(), postMessage);
 
-async function getMessages (req, res) {
+async function getMessages(req, res) {
   try {
     res.json(await db.getMessages(req.query.since));
   } catch (e) {
@@ -18,7 +18,7 @@ async function getMessages (req, res) {
   }
 }
 
-async function postMessage (req, res) {
+async function postMessage(req, res) {
   if (!util.checkBodyIsValid(req, res)) return;
 
   let photoUrl = null;

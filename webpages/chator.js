@@ -6,13 +6,13 @@ window.addEventListener('load', initialize);
 const AUTOREFRESH_INTERVAL = 1000; // 1s
 let elMsg;
 
-async function initialize () {
+async function initialize() {
   elMsg = document.querySelector('#newmsg');
   elMsg.addEventListener('keydown', keyDownHandler);
   loadMessages();
 }
 
-function keyDownHandler (e) {
+function keyDownHandler(e) {
   if (e.defaultPrevented) {
     return; // Do nothing if the event was already processed
   }
@@ -23,7 +23,7 @@ function keyDownHandler (e) {
   }
 }
 
-async function loadMessages (isUpdate = false) {
+async function loadMessages(isUpdate = false) {
   let url = '/v2/messages';
 
   // request only data since the last ID we've seen
@@ -49,7 +49,7 @@ async function loadMessages (isUpdate = false) {
   setTimeout(loadMessages, AUTOREFRESH_INTERVAL, true);
 }
 
-function fillMessages (data, isUpdate = false) {
+function fillMessages(data, isUpdate = false) {
   const ol = document.querySelector('#messages');
 
   data.reverse();
@@ -76,7 +76,7 @@ function fillMessages (data, isUpdate = false) {
   }
 }
 
-async function addMessage (e) {
+async function addMessage(e) {
   if (elMsg.value.trim() === '') {
     elMsg.focus();
     return;

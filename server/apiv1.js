@@ -25,7 +25,6 @@ async function postMessage(req, res) {
     await saveMessageInDB(req.body.value);
 
     res.json(await getMessagesFromDB());
-
   } catch (e) {
     console.error(e);
     res.sendStatus(500);

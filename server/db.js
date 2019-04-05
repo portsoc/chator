@@ -4,14 +4,14 @@ const config = require('./config');
 
 const globalConnection = mysql.createConnection(config.mysql);
 
-async function saveMessage (msg, url) {
+async function saveMessage(msg, url) {
   const myConn = await globalConnection;
   return myConn.execute(
     'INSERT INTO messages (message,url) VALUES (?,?)',
     [msg, url]);
 }
 
-async function getMessages (since) {
+async function getMessages(since) {
   const myConn = await globalConnection;
   let query = 'SELECT id, message, url FROM messages ORDER BY id DESC LIMIT 50';
   if (since != null) {
