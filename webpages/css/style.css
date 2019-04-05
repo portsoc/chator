@@ -61,6 +61,10 @@ body:not(.logged-in) #newmsg {
   --hi: var(--althi);
 }
 
+#typing {
+  height: 1em;
+}
+
 header {
   display: flex;
   flex-direction: row;

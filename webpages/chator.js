@@ -5,8 +5,10 @@
 window.addEventListener('load', initialize);
 const AUTOREFRESH_INTERVAL = 5000; // 5s
 let elMsg;
+let elTyping;
 
 async function initialize() {
+  elTyping = document.querySelector('#typing');
   elMsg = document.querySelector('#newmsg');
   elMsg.addEventListener('keydown', keyDownHandler);
   connectWS();
@@ -39,6 +41,9 @@ function handleWSMessage(event) {
     case 'allMessages':
       fillMessages(data.messages);
       break;
+    case 'typing':
+      indicateOthersTyping(data.count);
+      break;
   }
 }
 
@@ -47,10 +52,40 @@ function handleWSClose() {
   // todo back-off reconnect
 }
 
+function emitTypingIndication() {
+  if (wsConnected()) {
+    ws.send(JSON.stringify({
+      type: 'typing',
+    }));
+  }
+}
+
+let typingTimeout;
+
+function indicateOthersTyping(count) {
+  const usTyping = elMsg.value === '' ? 0 : 1;
+  let str = '';
+  for (let i = usTyping; i < count; i++) {
+    str += ' …';
+  }
+  elTyping.textContent = str;
+  if (typingTimeout) {
+    clearTimeout(typingTimeout);
+  }
+
+  typingTimeout = setTimeout(clearTyping, 5000);
+}
+
+function clearTyping() {
+  elTyping.textContent = '';
+}
+
 function keyDownHandler(e) {
   if (e.defaultPrevented) {
     return; // Do nothing if the event was already processed
   }
+
+  emitTypingIndication();
 
   if (e.key === 'Enter') {
     addMessage();
