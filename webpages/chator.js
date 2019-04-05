@@ -3,13 +3,48 @@
 /* global gapi */
 
 window.addEventListener('load', initialize);
-const AUTOREFRESH_INTERVAL = 1000; // 1s
+const AUTOREFRESH_INTERVAL = 5000; // 5s
 let elMsg;
 
 async function initialize() {
   elMsg = document.querySelector('#newmsg');
   elMsg.addEventListener('keydown', keyDownHandler);
-  loadMessages();
+  connectWS();
+}
+
+let ws = null;
+function connectWS() {
+  const origin = window.location.hostname + ':' + (window.location.port || 80);
+  ws = new WebSocket(`ws://${origin}/wsv1/`);
+  ws.addEventListener('message', handleWSMessage);
+  ws.addEventListener('error', handleWSClose);
+  ws.addEventListener('close', handleWSClose);
+  // if we want to write, login on open
+}
+
+function wsConnected() {
+  return ws != null && ws.readyState === WebSocket.OPEN;
+}
+
+// todo document payload design
+// todo posting over WS
+// todo typing indication
+
+function handleWSMessage(event) {
+  const data = JSON.parse(event.data);
+  switch (data.type) {
+    case 'message':
+      fillMessages([data.message], true);
+      break;
+    case 'allMessages':
+      fillMessages(data.messages);
+      break;
+  }
+}
+
+function handleWSClose() {
+  setTimeout(loadMessages, AUTOREFRESH_INTERVAL); // start loading messages over HTTP
+  // todo back-off reconnect
 }
 
 function keyDownHandler(e) {
@@ -46,7 +81,7 @@ async function loadMessages(isUpdate = false) {
     if (noMsgEl) noMsgEl.remove();
   }
 
-  setTimeout(loadMessages, AUTOREFRESH_INTERVAL, true);
+  if (!wsConnected()) setTimeout(loadMessages, AUTOREFRESH_INTERVAL, true);
 }
 
 function fillMessages(data, isUpdate = false) {

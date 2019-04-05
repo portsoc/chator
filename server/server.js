@@ -4,10 +4,17 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const GoogleAuth = require('simple-google-openid');
 
+const app = express();
+
+// enable WebSockets
+const expressWS = require('express-ws')(app);
+
 const apiv1 = require('./apiv1');
 const apiv2 = require('./apiv2');
+const wsv1 = require('./wsv1');
 
-const app = express();
+wsv1.setWss(expressWS.getWss());
+
 app.use(bodyParser.json());
 
 app.use(GoogleAuth('1010342411950-ulstr9hnl2uqrlth7pu94ic0h9eqlfb9.apps.googleusercontent.com'));
@@ -15,6 +22,7 @@ app.use(GoogleAuth('1010342411950-ulstr9hnl2uqrlth7pu94ic0h9eqlfb9.apps.googleus
 // versions of the API
 app.use(apiv1);
 app.use('/v2', apiv2);
+app.use('/wsv1', wsv1);
 
 // static routes
 app.use(express.static('./webpages'));

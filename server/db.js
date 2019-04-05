@@ -1,14 +1,22 @@
-
 const mysql = require('mysql2/promise');
 const config = require('./config');
 
 const globalConnection = mysql.createConnection(config.mysql);
 
-async function saveMessage(msg, url) {
+async function saveMessage(message, url) {
   const myConn = await globalConnection;
-  return myConn.execute(
+  const [rows] = await myConn.execute(
     'INSERT INTO messages (message,url) VALUES (?,?)',
-    [msg, url]);
+    [message, url]);
+
+  const newMessage = {
+    id: rows.insertId,
+    message,
+    url,
+  };
+  for (const f of messageListeners) {
+    f(newMessage);
+  }
 }
 
 async function getMessages(since) {
@@ -26,7 +34,14 @@ async function getMessages(since) {
   }));
 }
 
+const messageListeners = [];
+
+function addMessageListener(f) {
+  messageListeners.push(f);
+}
+
 module.exports = {
   getMessages,
   saveMessage,
+  addMessageListener,
 };
