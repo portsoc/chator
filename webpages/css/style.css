@@ -9,6 +9,7 @@
   --althi: rgba(224,173,0,0.25);
   --clear: rgba(0,0,0,0);
   --fg: rgba(0,0,0,1);
+  --caret: rgba(0,0,0,1);
   --bg: #FFF;
   --bgalt: #DEF;
   --body: #FFF;
@@ -31,7 +32,7 @@ body {
   font-size: 130%;
   background: var(--body);
   color: var(--fg);
-  caret-color: var(--hi);
+  caret-color: var(--fg);
 }
 
 body:not(.logged-in) #newmsg {
@@ -115,7 +116,8 @@ img.avatar {
     --hi: rgba(0,244,0,0.75);
     --althi: rgba(0,173,0,0.75);
     --clear: rgba(0,0,0,0);
-    --fg: rgba(204,204,204,0.8);
+    --fg: rgba(204,204,204,1);
+    --caret: rgba(100,255,100,1);
     --bg: #000;
     --bgalt: #222;
     --body: #111;
