@@ -4,6 +4,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const GoogleAuth = require('simple-google-openid');
 
+const config = require('./config');
+
 const app = express();
 
 // enable WebSockets
@@ -17,7 +19,7 @@ wsv1.setWss(expressWS.getWss());
 
 app.use(bodyParser.json());
 
-app.use(GoogleAuth('1010342411950-ulstr9hnl2uqrlth7pu94ic0h9eqlfb9.apps.googleusercontent.com'));
+app.use(GoogleAuth(config.googleClientID));
 
 // versions of the API
 app.use(apiv1);
