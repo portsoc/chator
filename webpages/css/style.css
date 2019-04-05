@@ -63,7 +63,7 @@ body:not(.logged-in) #newmsg {
 }
 
 #typing {
-  height: 1em;
+  height: 2rem;
 }
 
 header {

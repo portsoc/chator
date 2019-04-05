@@ -1,5 +1,9 @@
 const express = require('express');
 const WebSocket = require('ws');
+const GoogleAuth = require('simple-google-openid');
+
+const config = require('./config');
+const auth = GoogleAuth(config.googleClientID);
 
 const router = express.Router();
 
@@ -10,17 +14,21 @@ let wss;
 router.setWss = _wss => { wss = _wss; };
 
 router.ws('/', async (ws, req) => {
-  const wsMessage = JSON.stringify({
+  const wsMessage = {
     type: 'allMessages',
     messages: await db.getMessages()
-  });
-  ws.send(wsMessage);
+  };
+  ws.send(JSON.stringify(wsMessage));
 
-  ws.on('message', (msg) => {
+  ws.on('message', async (msg) => {
     const data = JSON.parse(msg);
     switch (data.type) {
       case 'typing':
         sendTypingIndication(ws);
+        break;
+      case 'login':
+        ws.user = await auth.verifyToken(data.token);
+        console.log('logged in ', ws.user);
         break;
     }
   });
@@ -36,27 +44,31 @@ function sendTypingIndication(ws) {
 
     if (lastTypingIndication < now - TYPING_INDICATION_INTERVAL) {
       lastTypingIndication = now;
-      const count = countTypingWSClients();
+      const pictures = tallyTypingWSClients();
 
       broadcast({
         type: 'typing',
-        count,
+        pictures,
       });
     }
   }
 }
 
-function countTypingWSClients() {
+function tallyTypingWSClients() {
   const now = Date.now();
-  let count = 0;
+  const pictures = [];
   if (wss) {
     for (const client of wss.clients) {
-      if (client.lastTypingIndication > now - TYPING_INDICATION_INTERVAL) {
-        count += 1;
+      let photoUrl = '';
+      if (client.user && client.user.photos) {
+        photoUrl = client.user.photos[0].value;
+      }
+      if (photoUrl && client.lastTypingIndication > now - TYPING_INDICATION_INTERVAL) {
+        pictures.push(photoUrl);
       }
     }
   }
-  return count;
+  return pictures;
 }
 
 function emitMessage(message) {

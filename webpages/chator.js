@@ -19,6 +19,7 @@ function connectWS() {
   const origin = window.location.hostname + ':' + (window.location.port || 80);
   ws = new WebSocket(`ws://${origin}/wsv1/`);
   ws.addEventListener('message', handleWSMessage);
+  ws.addEventListener('open', sendLoginMessage);
   ws.addEventListener('error', handleWSClose);
   ws.addEventListener('close', handleWSClose);
   // if we want to write, login on open
@@ -30,7 +31,19 @@ function wsConnected() {
 
 // todo document payload design
 // todo posting over WS
-// todo typing indication
+// todo typing indication should include name
+
+function sendLoginMessage() {
+  if (!wsConnected()) return;
+
+  const token = gapi.auth2.getAuthInstance().currentUser.get().getAuthResponse().id_token;
+  if (!token) return;
+
+  ws.send(JSON.stringify({
+    type: 'login',
+    token,
+  }));
+}
 
 function handleWSMessage(event) {
   const data = JSON.parse(event.data);
@@ -42,7 +55,7 @@ function handleWSMessage(event) {
       fillMessages(data.messages);
       break;
     case 'typing':
-      indicateOthersTyping(data.count);
+      indicateOthersTyping(data.pictures);
       break;
   }
 }
@@ -62,22 +75,25 @@ function emitTypingIndication() {
 
 let typingTimeout;
 
-function indicateOthersTyping(count) {
-  const usTyping = elMsg.value === '' ? 0 : 1;
-  let str = '';
-  for (let i = usTyping; i < count; i++) {
-    str += ' …';
+function indicateOthersTyping(pictures) {
+  clearEl(elTyping);
+
+  for (let i = 0; i < pictures.length; i++) {
+    const img = document.createElement('img');
+    img.classList.add('avatar');
+    img.alt = 'a user is typing';
+    img.src = pictures[i];
+    elTyping.appendChild(img);
   }
-  elTyping.textContent = str;
+
   if (typingTimeout) {
     clearTimeout(typingTimeout);
   }
-
-  typingTimeout = setTimeout(clearTyping, 5000);
+  typingTimeout = setTimeout(clearEl, 5000, elTyping);
 }
 
-function clearTyping() {
-  elTyping.textContent = '';
+function clearEl(el) {
+  el.textContent = '';
 }
 
 function keyDownHandler(e) {
@@ -172,4 +188,5 @@ async function addMessage(e) {
 
 window.onSignIn = (googleUser) => {
   document.body.classList.add('logged-in');
+  sendLoginMessage();
 };
