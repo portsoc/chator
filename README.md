@@ -24,12 +24,18 @@ Deployment
 * set up `server/config.json` using the sample in `server/config-sample.json` with your credentials
 
 
-API
+API and Documentation
 -----
 
 * /messages
   - GET: retrieve the last 50 messages
   - POST: add a message
+
+See more documentation in `docs/`
+
+* `docs/architecture.md` – an overview of the software design of Ch@or
+* `docs/api.md` and `docs/api-v1.md` – definition of the API
+* `docs/setup.md` how to set up Ch@or for running and development
 
 
 Contributing
